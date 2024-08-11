@@ -24,6 +24,7 @@ def save_data(datas: list, output_path: str) -> None:
                 json.dump(data[1], f)
 
 
+
 def load_data(input_path: str) -> dict:
     """Load the data extracted from API
 
@@ -45,3 +46,23 @@ def load_data(input_path: str) -> dict:
                 metadata = json.load(f)
             datas[metadata["2. Symbol"]] = (timeseries, metadata)
     return datas
+
+
+
+def sort_data(datas: dict) -> dict:
+    """Sort the data to have simpler columns
+    and historical sorted timestamps
+
+    Args:
+        datas (dict): Dictionnary of
+        historical daily data
+
+    Returns:
+        dict: Data sorted
+    """
+    timeseries = dict()
+    for symbol, value in datas.items():
+        data = value[0].sort_index()
+        data.columns = [col[1] for col in data.columns.str.split(' ')]
+        timeseries[symbol] = data
+    return timeseries
