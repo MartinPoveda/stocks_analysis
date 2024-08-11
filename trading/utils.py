@@ -17,10 +17,11 @@ def save_data(datas: list, output_path: str) -> None:
     for data in datas:
         symbol = data[1]["2. Symbol"]
         directory = output_path + symbol
-        os.mkdir(directory)
-        data[0].to_parquet(directory + '/data.parquet')
-        with open(directory + '/meta_data.json', 'w') as f:
-            json.dump(data[1], f)
+        if not os.path.exists(directory):
+            os.mkdir(directory)
+            data[0].to_parquet(directory + '/data.parquet')
+            with open(directory + '/meta_data.json', 'w') as f:
+                json.dump(data[1], f)
 
 
 def load_data(input_path: str) -> dict:
